@@ -1,0 +1,25 @@
+---
+name: MenuBarTemplates
+github: https://github.com/stageerdman/MenuBarTemplates
+visibility: public
+adopted: 2026-09-28
+claude_md_generated: 2026-09-28
+modules: [STRUCTURE, CODING, WORKFLOW, UX]
+secrets: []
+---
+
+MenuBarTemplates is a lightweight, local macOS menu bar app for reusable email
+templates. It stores templates on disk (no cloud, accounts, or sync), supports
+placeholder resolution, and writes rich HTML plus a plain-text fallback to the
+clipboard for pasting into Gmail, GoHighLevel, and similar tools.
+
+How to use: build with `./scripts/build-app.sh` and run `open
+dist/MenuBarTemplates.app`; run resolver checks with `swift run ResolverTests`.
+Template data lives at
+`~/Library/Application Support/MenuBarTemplates/templates.json`. Updates for
+this project live in `updates/` per its CLAUDE.md conventions.
+
+Status: adopted into AI Control on 2026-09-28. Existing, working Swift Package
+(SwiftUI/AppKit/WebKit) with core template model, resolver, clipboard writer,
+and menu bar UI. Known limitation: pasted inline/blob-backed images may not
+carry into every receiving app (see README). See the INIT update for details.

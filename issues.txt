@@ -1,0 +1,9 @@
+# Known issues and TODOs (newest first)
+
+2026-09-28  Inline/blob-backed images pasted into the editor may not carry into
+            some receiving apps (Gmail, GoHighLevel). The app writes HTML +
+            plain-text fallback but does not upload images or create real email
+            attachments. Candidate for a research spike. (see README)
+2026-09-28  Pending uncommitted edit in
+            Sources/MenuBarTemplates/HTMLBodyEditor.swift — decide and commit
+            separately from the adoption.
