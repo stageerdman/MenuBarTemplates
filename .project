@@ -21,5 +21,15 @@ this project live in `updates/` per its CLAUDE.md conventions.
 
 Status: adopted into AI Control on 2026-09-28. Existing, working Swift Package
 (SwiftUI/AppKit/WebKit) with core template model, resolver, clipboard writer,
-and menu bar UI. Known limitation: pasted inline/blob-backed images may not
-carry into every receiving app (see README). See the INIT update for details.
+and menu bar UI.
+
+In flight (paused 2026-09-28, both implemented + pushed, awaiting a human
+visual check before closing):
+- DOCK VISIBILITY — app shows a Dock icon only while its window is open
+  (activation-policy toggle). See updates/2026-09-28 DOCK VISIBILITY - OPEN.
+- APP ICON — white tile + copy/paste glyph for the Dock/Finder. See
+  updates/2026-09-28 APP ICON - OPEN.
+
+Known limitation: pasted inline/blob-backed images may not carry into every
+receiving app (see README). See issues.txt for the running TODO list and the
+INIT update for adoption details.

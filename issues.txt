@@ -1,5 +1,17 @@
 # Known issues and TODOs (newest first)
 
+2026-09-28  RESUME: two features implemented + pushed, awaiting a human VISUAL
+            check (couldn't be automated — needs Accessibility to drive the
+            menu-bar click):
+              1. DOCK VISIBILITY — open window shows Dock icon; hide/red-cross
+                 removes it. See "updates/2026-09-28 DOCK VISIBILITY - OPEN".
+              2. APP ICON — white tile + copy/paste glyph shows in Dock/Finder.
+                 See "updates/2026-09-28 APP ICON - OPEN".
+            To verify: open dist/MenuBarTemplates.app, click the menu-bar icon,
+            watch the Dock. If good, flip both update folders OPEN -> CLOSED.
+2026-09-28  TODO: INIT update Phase 1 baseline (run ResolverTests + full app
+            walk-through) not yet formally recorded. See INIT update.
+
 2026-09-28  Inline/blob-backed images pasted into the editor may not carry into
             some receiving apps (Gmail, GoHighLevel). The app writes HTML +
             plain-text fallback but does not upload images or create real email
