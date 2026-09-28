@@ -35,7 +35,7 @@ struct HTMLBodyEditor: NSViewRepresentable {
 
         if context.coordinator.lastHTML != html {
             context.coordinator.lastHTML = html
-            webView.evaluateJavaScript("window.setEditorHTML(\"\(html.javaScriptEscaped)\");")
+            webView.evaluateJavaScript("window.setEditorHTML(\(html.javaScriptEscaped));")
         }
 
         webView.evaluateJavaScript("document.body.contentEditable = \(isEditable ? "'true'" : "'false'");")
@@ -135,7 +135,7 @@ private enum HTMLCommandCenter {
         guard isEditable else {
             return
         }
-        webView?.evaluateJavaScript("document.execCommand('\(command)', false, \"\(value.javaScriptEscaped)\"); window.emitHTML();")
+        webView?.evaluateJavaScript("document.execCommand('\(command)', false, \(value.javaScriptEscaped)); window.emitHTML();")
     }
 }
 
