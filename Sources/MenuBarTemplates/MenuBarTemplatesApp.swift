@@ -3,7 +3,7 @@ import SwiftUI
 
 @main
 @MainActor
-final class MenuBarTemplatesApp: NSObject, NSApplicationDelegate {
+final class MenuBarTemplatesApp: NSObject, NSApplicationDelegate, NSWindowDelegate {
     private var statusItem: NSStatusItem!
     private var window: NSWindow?
     private let store = TemplateStore()
@@ -46,13 +46,29 @@ final class MenuBarTemplatesApp: NSObject, NSApplicationDelegate {
             statusItem.button?.performClick(nil)
             statusItem.menu = nil
         } else {
-            showWindow()
+            toggleWindow()
         }
     }
 
     @objc private func quit() {
         store.saveImmediately()
         NSApp.terminate(nil)
+    }
+
+    /// The window is "shown" when it exists, is on screen, and isn't minimized.
+    /// A minimized window still lives in the Dock, so we treat it as shown and
+    /// simply bring it back on the next menu-bar click.
+    private var isWindowShown: Bool {
+        guard let window else { return false }
+        return window.isVisible && !window.isMiniaturized
+    }
+
+    private func toggleWindow() {
+        if isWindowShown {
+            hideWindow()
+        } else {
+            showWindow()
+        }
     }
 
     private func showWindow() {
@@ -69,11 +85,38 @@ final class MenuBarTemplatesApp: NSObject, NSApplicationDelegate {
             createdWindow.contentView = hostingView
             createdWindow.center()
             createdWindow.isReleasedWhenClosed = false
+            createdWindow.delegate = self
             window = createdWindow
         }
 
+        setDockVisible(true)
+        window?.deminiaturize(nil)
         window?.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    /// Hide the window back into the menu bar (kept alive, off screen) and drop
+    /// the Dock icon. Shares the Dock switch with the red-cross close path.
+    private func hideWindow() {
+        window?.orderOut(nil)
+        setDockVisible(false)
+    }
+
+    /// Show or hide the Dock icon by switching the app's activation policy.
+    /// `.regular` = Dock icon + app menu; `.accessory` = menu-bar only.
+    private func setDockVisible(_ visible: Bool) {
+        let desired: NSApplication.ActivationPolicy = visible ? .regular : .accessory
+        if NSApp.activationPolicy() != desired {
+            NSApp.setActivationPolicy(desired)
+        }
+    }
+
+    // MARK: - NSWindowDelegate
+
+    /// The red cross (or ⌘W) closes the window; the window is reused
+    /// (`isReleasedWhenClosed = false`), so we just drop the Dock icon.
+    func windowWillClose(_ notification: Notification) {
+        setDockVisible(false)
     }
 
     private func installMainMenu() {

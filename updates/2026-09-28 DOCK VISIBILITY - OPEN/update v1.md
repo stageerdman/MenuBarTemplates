@@ -65,8 +65,51 @@ destroying.
 - **Verify:** run the built app and walk the full matrix
   (open / hide / close / reopen / minimize+restore / quit).
 
+## Status
+All three phases implemented in `MenuBarTemplatesApp.swift`; debug + release
+builds pass and the app launches and runs as an accessory (no Dock icon) at
+launch. Final **visual** confirmation of the Dock toggle is left to a human run
+(see Verification).
+
+- [x] **Phase 1** — `.regular` on show, `windowWillClose` → `.accessory`.
+- [x] **Phase 2** — menu-bar left-click toggles show/hide; hide and close share
+      one Dock switch (`setDockVisible`).
+- [x] **Phase 3** — launch stays `.accessory`; minimized keeps `.regular`
+      (treated as "shown"); redundant policy flips guarded; verified by running.
+
+## Implementation
+- `MenuBarTemplatesApp` now conforms to `NSWindowDelegate`.
+- `showWindow()` sets the window `delegate`, calls `setDockVisible(true)`,
+  deminiaturizes, orders front, and activates.
+- `hideWindow()` does `orderOut` + `setDockVisible(false)`.
+- `setDockVisible(_:)` maps `true → .regular`, `false → .accessory` and only
+  calls `setActivationPolicy` on a real transition.
+- `windowWillClose(_:)` (red cross / ⌘W) → `setDockVisible(false)`.
+- Left-click on the status item now calls `toggleWindow()` (was `showWindow()`),
+  using `isWindowShown` (`isVisible && !isMiniaturized`).
+
 ## Decisions
-- _(to be filled as we build)_
+- **No contrived unit test for the policy mapping.** The mapping is a one-line
+  boolean→policy choice (trivial glue); the real behavior is AppKit window/Dock
+  state that can't be meaningfully unit-tested. Per CODING ("skip trivial glue",
+  "keep it minimal") we verify by running the app instead of manufacturing a
+  cross-module enum just to have a test. This overrides the roadmap's original
+  "add a test" note.
+- **`LSUIElement=true` + runtime `setActivationPolicy`.** The bundle launches as
+  an agent (no Dock icon); switching to `.regular` at runtime overrides that and
+  shows the Dock icon — the standard pattern, confirmed working together.
+- **Minimized (yellow) keeps the Dock icon.** A minimized window still lives in
+  the Dock, so `isWindowShown` treats it as shown; only hide/close remove the
+  Dock icon.
+
+## Verification
+- [x] Debug build (`swift build`) and release bundle (`./scripts/build-app.sh`)
+      succeed.
+- [x] App launches and persists as `type="UIElement"` (accessory, no Dock icon)
+      — confirmed via `lsappinfo`.
+- [ ] **Human visual check (pending):** open from the menu bar → Dock icon
+      appears; click the menu-bar icon again → Dock icon disappears; red-cross
+      the window → Dock icon disappears; reopen works; minimize keeps the icon.
 
 ## Next
-- Implement Phase 1.
+- Human confirms the visual toggle, then flip this update `OPEN` → `CLOSED`.
